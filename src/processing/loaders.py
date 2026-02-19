@@ -1,11 +1,23 @@
 """Document loaders for various file formats."""
 from typing import List
 from pathlib import Path
-from langchain_community.document_loaders import (
-    PyPDFLoader,
-    Docx2txtLoader,
-    TextLoader,
-)
+
+# Import directly to avoid Windows pwd module issue
+try:
+    from langchain_community.document_loaders.pdf import PyPDFLoader
+except ImportError:
+    from langchain.document_loaders import PyPDFLoader
+
+try:
+    from langchain_community.document_loaders.word_document import Docx2txtLoader
+except ImportError:
+    from langchain.document_loaders import Docx2txtLoader
+
+try:
+    from langchain_community.document_loaders.text import TextLoader
+except ImportError:
+    from langchain.document_loaders import TextLoader
+
 from langchain.schema import Document
 from src.utils.logger import logger
 from src.utils.exceptions import DocumentProcessingError
@@ -33,7 +45,7 @@ class DocumentLoader:
             
             if extension not in cls.SUPPORTED_EXTENSIONS:
                 raise DocumentProcessingError(
-                    f"Unsupported file type: {extension}"
+                    f"Unsupported file type: {extension}. Supported: {list(cls.SUPPORTED_EXTENSIONS.keys())}"
                 )
             
             # Get appropriate loader

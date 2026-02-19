@@ -3,3 +3,6 @@ env
 .env
 __pycache__/
 .env.local
+data/raw/test.txt
+data/processed/
+data/vectorstore/

@@ -1,11 +1,17 @@
 """Script to ingest documents into the vector store."""
-import argparse
+import sys
 from pathlib import Path
+
+# Add project root to path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+import argparse
 from src.processing.loaders import DocumentLoader
 from src.processing.chunkers import DocumentChunker
 from src.vectorstore.chroma_manager import get_chroma_manager
 from src.utils.logger import logger
 
+# ... rest of the file stays the same
 
 def ingest_document(file_path: str) -> None:
     """Ingest a single document."""
