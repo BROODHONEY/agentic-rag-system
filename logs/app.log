@@ -83,3 +83,42 @@
 2026-02-20 15:35:24 | INFO     | src.vectorstore.chroma_manager:similarity_search:102 - Found 1 similar documents
 2026-02-20 15:35:24 | INFO     | src.tools.semantic_search:search:41 - Found 1 relevant documents
 2026-02-20 15:35:25 | INFO     | src.core.agent:query:151 - Successfully processed query
+2026-02-20 15:46:58 | INFO     | src.core.llm:__init__:31 - Initialized Groq LLM with model: llama-3.3-70b-versatile
+2026-02-20 15:46:58 | INFO     | src.memory.conversation:__init__:15 - Initialized conversation memory (max_history=10)
+2026-02-20 15:46:58 | INFO     | src.vectorstore.chroma_manager:__init__:26 - Loading embedding model...
+2026-02-20 15:47:28 | INFO     | src.vectorstore.chroma_manager:__init__:30 - Loaded embedding model: sentence-transformers/all-MiniLM-L6-v2
+2026-02-20 15:47:28 | INFO     | src.vectorstore.chroma_manager:__init__:49 - Initialized ChromaDB collection: documents
+2026-02-20 15:47:28 | INFO     | src.core.agent:_create_agent:115 - Created agent executor
+2026-02-20 15:47:28 | INFO     | src.core.agent:__init__:45 - Initialized Agentic RAG system
+2026-02-20 15:47:28 | INFO     | api.routes:<module>:31 - RAG system initialized for API
+2026-02-20 15:48:17 | INFO     | src.core.llm:__init__:31 - Initialized Groq LLM with model: llama-3.3-70b-versatile
+2026-02-20 15:48:17 | INFO     | src.memory.conversation:__init__:15 - Initialized conversation memory (max_history=10)
+2026-02-20 15:48:17 | INFO     | src.vectorstore.chroma_manager:__init__:26 - Loading embedding model...
+2026-02-20 15:48:48 | INFO     | src.vectorstore.chroma_manager:__init__:30 - Loaded embedding model: sentence-transformers/all-MiniLM-L6-v2
+2026-02-20 15:48:49 | INFO     | src.vectorstore.chroma_manager:__init__:49 - Initialized ChromaDB collection: documents
+2026-02-20 15:48:49 | INFO     | src.core.agent:_create_agent:115 - Created agent executor
+2026-02-20 15:48:49 | INFO     | src.core.agent:__init__:45 - Initialized Agentic RAG system
+2026-02-20 15:48:49 | INFO     | api.routes:<module>:31 - RAG system initialized for API
+2026-02-20 15:52:17 | INFO     | src.core.llm:__init__:31 - Initialized Groq LLM with model: llama-3.3-70b-versatile
+2026-02-20 15:52:17 | INFO     | src.memory.conversation:__init__:15 - Initialized conversation memory (max_history=10)
+2026-02-20 15:52:17 | INFO     | src.vectorstore.chroma_manager:__init__:26 - Loading embedding model...
+2026-02-20 15:52:46 | INFO     | src.vectorstore.chroma_manager:__init__:30 - Loaded embedding model: sentence-transformers/all-MiniLM-L6-v2
+2026-02-20 15:52:46 | INFO     | src.vectorstore.chroma_manager:__init__:49 - Initialized ChromaDB collection: documents
+2026-02-20 15:52:46 | INFO     | src.core.agent:_create_agent:115 - Created agent executor
+2026-02-20 15:52:46 | INFO     | src.core.agent:__init__:45 - Initialized Agentic RAG system
+2026-02-20 15:52:46 | INFO     | api.routes:<module>:31 - RAG system initialized for API
+2026-02-20 15:52:57 | INFO     | src.core.llm:__init__:31 - Initialized Groq LLM with model: llama-3.3-70b-versatile
+2026-02-20 15:52:57 | INFO     | src.memory.conversation:__init__:15 - Initialized conversation memory (max_history=10)
+2026-02-20 15:52:57 | INFO     | src.vectorstore.chroma_manager:__init__:26 - Loading embedding model...
+2026-02-20 15:53:26 | INFO     | src.vectorstore.chroma_manager:__init__:30 - Loaded embedding model: sentence-transformers/all-MiniLM-L6-v2
+2026-02-20 15:53:27 | INFO     | src.vectorstore.chroma_manager:__init__:49 - Initialized ChromaDB collection: documents
+2026-02-20 15:53:27 | INFO     | src.core.agent:_create_agent:115 - Created agent executor
+2026-02-20 15:53:27 | INFO     | src.core.agent:__init__:45 - Initialized Agentic RAG system
+2026-02-20 15:53:27 | INFO     | api.routes:<module>:31 - RAG system initialized for API
+2026-02-20 15:53:27 | INFO     | api.main:lifespan:20 - ============================================================
+2026-02-20 15:53:27 | INFO     | api.main:lifespan:21 - 🚀 Starting Agentic RAG API Server
+2026-02-20 15:53:27 | INFO     | api.main:lifespan:22 - ============================================================
+2026-02-20 15:53:27 | INFO     | api.main:lifespan:23 - Model: llama-3.3-70b-versatile
+2026-02-20 15:53:27 | INFO     | api.main:lifespan:24 - Vector Store: ./data/vectorstore
+2026-02-20 15:53:27 | INFO     | api.main:lifespan:25 - API Port: 8000
+2026-02-20 15:53:27 | INFO     | api.main:lifespan:26 - ============================================================
