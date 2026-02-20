@@ -122,3 +122,6 @@
 2026-02-20 15:53:27 | INFO     | api.main:lifespan:24 - Vector Store: ./data/vectorstore
 2026-02-20 15:53:27 | INFO     | api.main:lifespan:25 - API Port: 8000
 2026-02-20 15:53:27 | INFO     | api.main:lifespan:26 - ============================================================
+2026-02-20 16:37:50 | INFO     | api.main:lifespan:31 - ============================================================
+2026-02-20 16:37:50 | INFO     | api.main:lifespan:32 - 🛑 Shutting down Agentic RAG API Server
+2026-02-20 16:37:50 | INFO     | api.main:lifespan:33 - ============================================================
