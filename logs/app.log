@@ -65,3 +65,21 @@
 2026-02-19 13:57:08 | INFO     | src.vectorstore.chroma_manager:similarity_search:102 - Found 1 similar documents
 2026-02-19 13:57:08 | INFO     | src.tools.semantic_search:search:41 - Found 1 relevant documents
 2026-02-19 13:57:08 | INFO     | src.core.agent:query:151 - Successfully processed query
+2026-02-20 15:31:30 | INFO     | src.core.llm:__init__:31 - Initialized Groq LLM with model: llama-3.3-70b-versatile
+2026-02-20 15:31:30 | INFO     | src.memory.conversation:__init__:15 - Initialized conversation memory (max_history=10)
+2026-02-20 15:31:30 | INFO     | src.vectorstore.chroma_manager:__init__:26 - Loading embedding model...
+2026-02-20 15:33:44 | INFO     | src.vectorstore.chroma_manager:__init__:30 - Loaded embedding model: sentence-transformers/all-MiniLM-L6-v2
+2026-02-20 15:33:45 | INFO     | src.vectorstore.chroma_manager:__init__:49 - Initialized ChromaDB collection: documents
+2026-02-20 15:33:45 | INFO     | src.core.agent:_create_agent:115 - Created agent executor
+2026-02-20 15:33:45 | INFO     | src.core.agent:__init__:45 - Initialized Agentic RAG system
+2026-02-20 15:35:20 | INFO     | src.core.agent:query:129 - Processing query: what are the examples of NLP?
+2026-02-20 15:35:22 | INFO     | src.tools.semantic_search:search:20 - Performing semantic search for: Examples of NLP
+2026-02-20 15:35:22 | INFO     | src.vectorstore.chroma_manager:similarity_search:102 - Found 1 similar documents
+2026-02-20 15:35:22 | INFO     | src.tools.semantic_search:search:41 - Found 1 relevant documents
+2026-02-20 15:35:23 | INFO     | src.tools.semantic_search:search:20 - Performing semantic search for: NLP applications and examples
+2026-02-20 15:35:23 | INFO     | src.vectorstore.chroma_manager:similarity_search:102 - Found 1 similar documents
+2026-02-20 15:35:23 | INFO     | src.tools.semantic_search:search:41 - Found 1 relevant documents
+2026-02-20 15:35:24 | INFO     | src.tools.semantic_search:search:20 - Performing semantic search for: Common NLP applications
+2026-02-20 15:35:24 | INFO     | src.vectorstore.chroma_manager:similarity_search:102 - Found 1 similar documents
+2026-02-20 15:35:24 | INFO     | src.tools.semantic_search:search:41 - Found 1 relevant documents
+2026-02-20 15:35:25 | INFO     | src.core.agent:query:151 - Successfully processed query
