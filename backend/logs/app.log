@@ -125,3 +125,26 @@
 2026-02-20 16:37:50 | INFO     | api.main:lifespan:31 - ============================================================
 2026-02-20 16:37:50 | INFO     | api.main:lifespan:32 - 🛑 Shutting down Agentic RAG API Server
 2026-02-20 16:37:50 | INFO     | api.main:lifespan:33 - ============================================================
+2026-02-21 11:19:24 | INFO     | src.core.llm:__init__:31 - Initialized Groq LLM with model: llama-3.3-70b-versatile
+2026-02-21 11:19:24 | INFO     | src.memory.conversation:__init__:15 - Initialized conversation memory (max_history=10)
+2026-02-21 11:19:24 | INFO     | src.vectorstore.chroma_manager:__init__:26 - Loading embedding model...
+2026-02-21 11:20:31 | INFO     | src.vectorstore.chroma_manager:__init__:30 - Loaded embedding model: sentence-transformers/all-MiniLM-L6-v2
+2026-02-21 11:20:32 | INFO     | src.vectorstore.chroma_manager:__init__:49 - Initialized ChromaDB collection: documents
+2026-02-21 11:20:32 | INFO     | src.core.agent:_create_agent:115 - Created agent executor
+2026-02-21 11:20:32 | INFO     | src.core.agent:__init__:45 - Initialized Agentic RAG system
+2026-02-21 11:20:32 | INFO     | api.routes:<module>:31 - RAG system initialized for API
+2026-02-21 11:20:38 | INFO     | src.core.llm:__init__:31 - Initialized Groq LLM with model: llama-3.3-70b-versatile
+2026-02-21 11:20:38 | INFO     | src.memory.conversation:__init__:15 - Initialized conversation memory (max_history=10)
+2026-02-21 11:20:38 | INFO     | src.vectorstore.chroma_manager:__init__:26 - Loading embedding model...
+2026-02-21 11:20:57 | INFO     | src.vectorstore.chroma_manager:__init__:30 - Loaded embedding model: sentence-transformers/all-MiniLM-L6-v2
+2026-02-21 11:20:57 | INFO     | src.vectorstore.chroma_manager:__init__:49 - Initialized ChromaDB collection: documents
+2026-02-21 11:20:57 | INFO     | src.core.agent:_create_agent:115 - Created agent executor
+2026-02-21 11:20:57 | INFO     | src.core.agent:__init__:45 - Initialized Agentic RAG system
+2026-02-21 11:20:57 | INFO     | api.routes:<module>:31 - RAG system initialized for API
+2026-02-21 11:20:58 | INFO     | api.main:lifespan:20 - ============================================================
+2026-02-21 11:20:58 | INFO     | api.main:lifespan:21 - 🚀 Starting Agentic RAG API Server
+2026-02-21 11:20:58 | INFO     | api.main:lifespan:22 - ============================================================
+2026-02-21 11:20:58 | INFO     | api.main:lifespan:23 - Model: llama-3.3-70b-versatile
+2026-02-21 11:20:58 | INFO     | api.main:lifespan:24 - Vector Store: ./data/vectorstore
+2026-02-21 11:20:58 | INFO     | api.main:lifespan:25 - API Port: 8000
+2026-02-21 11:20:58 | INFO     | api.main:lifespan:26 - ============================================================
