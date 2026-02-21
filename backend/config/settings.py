@@ -1,6 +1,6 @@
 """Application configuration settings."""
 from pydantic_settings import BaseSettings
-from typing import Optional
+from typing import Optional, Literal
 from dotenv import load_dotenv
 import os
 
@@ -18,8 +18,18 @@ class Settings(BaseSettings):
     max_tokens: int = 1024
     
     # Vector Store Configuration
+    vector_store_type: Literal["chroma", "pinecone"] = os.getenv("VECTOR_STORE_TYPE", "chroma")
+    
+    # ChromaDB Configuration (local)
     chroma_persist_directory: str = "./data/vectorstore"
     chroma_collection_name: str = "documents"
+    
+    # Pinecone Configuration (cloud)
+    pinecone_api_key: str = os.getenv("PINECONE_API_KEY", "")
+    pinecone_environment: str = os.getenv("PINECONE_ENVIRONMENT", "")
+    pinecone_index_name: str = os.getenv("PINECONE_INDEX_NAME", "agentic-rag")
+    
+    # Embedding Configuration
     embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
     
     # Retrieval Configuration

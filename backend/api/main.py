@@ -77,17 +77,20 @@ async def root():
 async def health_check():
     """Health check endpoint."""
     try:
-        from src.vectorstore.chroma_manager import get_chroma_manager
-        chroma = get_chroma_manager()
-        doc_count = chroma.get_collection_count()
+        from src.vectorstore.chroma_manager import get_vector_store
+        from config.settings import settings
+        
+        vectorstore = get_vector_store()
+        doc_count = vectorstore.get_collection_count()
         
         return {
             "status": "healthy",
             "model": settings.default_model,
-            "vector_store": settings.chroma_collection_name,
+            "vector_store": settings.vector_store_type,
             "documents": doc_count,
         }
     except Exception as e:
+        logger.error(f"Health check failed: {e}")
         return {
             "status": "unhealthy",
             "error": str(e)

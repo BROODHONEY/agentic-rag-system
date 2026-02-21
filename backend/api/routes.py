@@ -19,7 +19,7 @@ from api.schemas import (
 from src.core.agent import create_agentic_rag
 from src.processing.loaders import DocumentLoader
 from src.processing.chunkers import DocumentChunker
-from src.vectorstore.chroma_manager import get_chroma_manager
+from src.vectorstore.chroma_manager import get_vector_store
 from src.utils.logger import logger
 
 
@@ -109,8 +109,8 @@ async def ingest_document(file: UploadFile = File(...)):
             logger.info(f"Created {len(chunks)} chunks")
             
             # Add to vector store
-            chroma = get_chroma_manager()
-            doc_ids = chroma.add_documents(
+            vectorstore = get_vector_store()
+            doc_ids = vectorstore.add_documents(
                 documents=[chunk.page_content for chunk in chunks],
                 metadatas=[chunk.metadata for chunk in chunks],
             )
@@ -124,7 +124,7 @@ async def ingest_document(file: UploadFile = File(...)):
                     "filename": file.filename,
                     "num_chunks": len(chunks),
                     "num_documents": len(documents),
-                    "total_in_db": chroma.get_collection_count()
+                    "total_in_db": vectorstore.get_collection_count()
                 }
             )
             
@@ -148,19 +148,35 @@ async def get_stats():
     Returns information about the vector store and agent.
     """
     try:
-        chroma = get_chroma_manager()
-        doc_count = chroma.get_collection_count()
+        from config.settings import settings
+        
+        vectorstore = get_vector_store()
+        doc_count = vectorstore.get_collection_count()
+        
+        # Determine vector store type and details
+        vector_store_type = settings.vector_store_type
+        if vector_store_type == "pinecone":
+            store_location = "Cloud (Pinecone)"
+            collection_name = getattr(vectorstore, 'index_name', settings.pinecone_index_name)
+        else:
+            store_location = getattr(vectorstore, 'persist_directory', './data/vectorstore')
+            collection_name = getattr(vectorstore, 'collection_name', settings.chroma_collection_name)
         
         stats = StatsResponse(
             vector_store={
-                "collection": chroma.collection_name,
+                "type": vector_store_type.upper(),
+                "collection": collection_name,
                 "document_count": doc_count,
-                "persist_directory": chroma.persist_directory,
+                "persist_directory": store_location,
+                "embedding_model": settings.embedding_model,
             },
             agent={
                 "tools": rag_system.get_tool_names() if rag_system else [],
                 "model": rag_system.llm.model if rag_system else "N/A",
                 "memory_enabled": rag_system.use_memory if rag_system else False,
+                "temperature": settings.temperature,
+                "max_tokens": settings.max_tokens,
+                "top_k": settings.top_k_results,
             }
         )
         
@@ -206,8 +222,8 @@ async def reset_vector_store():
     Returns status message.
     """
     try:
-        chroma = get_chroma_manager()
-        chroma.reset()
+        vectorstore = get_vector_store()
+        vectorstore.reset()
         
         return MessageResponse(
             status="success",
@@ -216,6 +232,41 @@ async def reset_vector_store():
         
     except Exception as e:
         logger.error(f"Error resetting vector store: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete("/documents/{source:path}", response_model=MessageResponse)
+async def delete_document(source: str):
+    """
+    Delete a specific document and all its chunks from the vector store.
+    
+    - **source**: The source path/filename of the document to delete
+    
+    Returns status message.
+    """
+    try:
+        vectorstore = get_vector_store()
+        
+        # Delete by source
+        deleted_count = vectorstore.delete_by_source(source)
+        
+        if deleted_count == 0:
+            raise HTTPException(
+                status_code=404,
+                detail=f"No documents found with source: {source}"
+            )
+        
+        logger.info(f"Deleted {deleted_count} chunks from document: {source}")
+        
+        return MessageResponse(
+            status="success",
+            message=f"Deleted document '{source}' ({deleted_count} chunks)"
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting document: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -230,8 +281,8 @@ async def search_documents(query: str, k: int = 5):
     Returns raw search results.
     """
     try:
-        chroma = get_chroma_manager()
-        results = chroma.similarity_search(query, k=k)
+        vectorstore = get_vector_store()
+        results = vectorstore.similarity_search(query, k=k)
         
         return {
             "query": query,
@@ -241,4 +292,24 @@ async def search_documents(query: str, k: int = 5):
         
     except Exception as e:
         logger.error(f"Error in search: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/documents", response_model=Dict)
+async def get_all_documents():
+    """
+    Get all documents with their chunks and embeddings info.
+    
+    Returns all documents grouped by source file.
+    """
+    try:
+        vectorstore = get_vector_store()
+        
+        # Get all documents
+        result = vectorstore.get_all_documents()
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error getting documents: {e}")
         raise HTTPException(status_code=500, detail=str(e))

@@ -7,9 +7,10 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from config.settings import settings
 from src.utils.logger import logger
 from src.utils.exceptions import VectorStoreError
+from src.vectorstore.base_manager import BaseVectorStoreManager
 
 
-class ChromaManager:
+class ChromaManager(BaseVectorStoreManager):
     """Manages ChromaDB vector store operations."""
     
     def __init__(
@@ -125,6 +126,77 @@ class ChromaManager:
         except Exception as e:
             logger.error(f"Error resetting vector store: {e}")
             raise VectorStoreError(f"Failed to reset vector store: {e}")
+    
+    def get_all_documents(self) -> Dict[str, Any]:
+        """Get all documents with their chunks and embeddings."""
+        try:
+            collection = self.client.get_collection(name=self.collection_name)
+            
+            # Get all documents from collection
+            all_data = collection.get(include=['documents', 'metadatas', 'embeddings'])
+            
+            # Group by source file
+            documents_by_source = {}
+            
+            for i, (doc_id, content, metadata, embedding) in enumerate(zip(
+                all_data['ids'],
+                all_data['documents'],
+                all_data['metadatas'],
+                all_data['embeddings'] if all_data['embeddings'] else [None] * len(all_data['ids'])
+            )):
+                source = metadata.get('source', 'Unknown')
+                
+                if source not in documents_by_source:
+                    documents_by_source[source] = {
+                        'source': source,
+                        'chunks': [],
+                        'total_chunks': 0,
+                    }
+                
+                chunk_info = {
+                    'id': doc_id,
+                    'content': content,
+                    'metadata': metadata,
+                    'embedding_dim': len(embedding) if embedding else 0,
+                    'content_length': len(content),
+                }
+                
+                documents_by_source[source]['chunks'].append(chunk_info)
+                documents_by_source[source]['total_chunks'] += 1
+            
+            return {
+                'documents': list(documents_by_source.values()),
+                'total_documents': len(documents_by_source),
+                'total_chunks': sum(d['total_chunks'] for d in documents_by_source.values()),
+            }
+            
+        except Exception as e:
+            logger.error(f"Error getting documents: {e}")
+            raise VectorStoreError(f"Failed to get documents: {e}")
+    
+    def delete_by_source(self, source: str) -> int:
+        """Delete all documents with a specific source."""
+        try:
+            collection = self.client.get_collection(name=self.collection_name)
+            
+            # Get all document IDs with matching source
+            all_data = collection.get(
+                where={"source": source},
+                include=['metadatas']
+            )
+            
+            if not all_data['ids']:
+                return 0
+            
+            # Delete all chunks from this document
+            collection.delete(ids=all_data['ids'])
+            
+            logger.info(f"Deleted {len(all_data['ids'])} chunks from document: {source}")
+            return len(all_data['ids'])
+            
+        except Exception as e:
+            logger.error(f"Error deleting documents: {e}")
+            raise VectorStoreError(f"Failed to delete documents: {e}")
 
 
 # Singleton instance
@@ -136,3 +208,14 @@ def get_chroma_manager() -> ChromaManager:
     if _chroma_instance is None:
         _chroma_instance = ChromaManager()
     return _chroma_instance
+
+
+def get_vector_store():
+    """Get the configured vector store (ChromaDB or Pinecone)."""
+    from config.settings import settings
+    
+    if settings.vector_store_type == "pinecone":
+        from src.vectorstore.pinecone_manager import PineconeManager
+        return PineconeManager()
+    else:
+        return get_chroma_manager()

@@ -21,14 +21,19 @@ export interface QueryResponse {
 
 export interface StatsResponse {
   vector_store: {
+    type?: string;
     collection: string;
     document_count: number;
     persist_directory: string;
+    embedding_model?: string;
   };
   agent: {
     tools: string[];
     model: string;
     memory_enabled: boolean;
+    temperature?: number;
+    max_tokens?: number;
+    top_k?: number;
   };
 }
 
@@ -139,6 +144,40 @@ class APIClient {
     );
 
     if (!response.ok) throw new Error('Failed to clear conversation');
+    return response.json();
+  }
+
+  /**
+   * Get all documents with chunks and embeddings
+   */
+  async getAllDocuments() {
+    const response = await fetch(`${this.baseURL}/api/v1/documents`);
+    if (!response.ok) throw new Error('Failed to fetch documents');
+    return response.json();
+  }
+
+  /**
+   * Reset vector store (clear all embeddings)
+   */
+  async resetVectorStore() {
+    const response = await fetch(`${this.baseURL}/api/v1/reset`, {
+      method: 'POST',
+    });
+    if (!response.ok) throw new Error('Failed to reset vector store');
+    return response.json();
+  }
+
+  /**
+   * Delete a specific document by source
+   */
+  async deleteDocument(source: string) {
+    const response = await fetch(
+      `${this.baseURL}/api/v1/documents/${encodeURIComponent(source)}`,
+      {
+        method: 'DELETE',
+      }
+    );
+    if (!response.ok) throw new Error('Failed to delete document');
     return response.json();
   }
 }

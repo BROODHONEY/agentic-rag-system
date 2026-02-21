@@ -1,7 +1,7 @@
 """Semantic search tool using vector similarity."""
 from typing import Optional
 from langchain.tools import Tool
-from src.vectorstore.chroma_manager import get_chroma_manager
+from src.vectorstore.chroma_manager import get_vector_store
 from src.utils.logger import logger
 from src.utils.exceptions import ToolExecutionError
 
@@ -12,14 +12,14 @@ class SemanticSearchTool:
     def __init__(self, top_k: Optional[int] = None):
         """Initialize semantic search tool."""
         self.top_k = top_k
-        self.chroma = get_chroma_manager()
+        self.vectorstore = get_vector_store()
     
     def search(self, query: str) -> str:
         """Search the knowledge base using semantic similarity."""
         try:
             logger.info(f"Performing semantic search for: {query}")
             
-            results = self.chroma.similarity_search(query=query, k=self.top_k)
+            results = self.vectorstore.similarity_search(query=query, k=self.top_k)
             
             if not results:
                 return "No relevant documents found in the knowledge base."

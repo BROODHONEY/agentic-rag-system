@@ -1,6 +1,5 @@
 'use client';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import { Upload, FileText, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { apiClient } from '@/lib/api';
@@ -8,10 +7,19 @@ import { apiClient } from '@/lib/api';
 interface UploadStatus {
   status: 'idle' | 'uploading' | 'success' | 'error';
   message?: string;
-  metadata?: any;
+  metadata?: {
+    filename: string;
+    num_chunks: number;
+    num_documents: number;
+    total_in_db: number;
+  };
 }
 
-export default function UploadPanel() {
+interface UploadPanelProps {
+  onUploadSuccess?: () => void;
+}
+
+export default function UploadPanel({ onUploadSuccess }: UploadPanelProps) {
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>({ status: 'idle' });
   const [dragActive, setDragActive] = useState(false);
 
@@ -38,15 +46,23 @@ export default function UploadPanel() {
         metadata: response.metadata,
       });
 
+      // Notify parent of successful upload
+      onUploadSuccess?.();
+
       // Reset after 5 seconds
       setTimeout(() => {
         setUploadStatus({ status: 'idle' });
       }, 5000);
-    } catch (error: any) {
+    } catch (error) {
       setUploadStatus({
         status: 'error',
-        message: error.message || 'Upload failed',
+        message: error instanceof Error ? error.message : 'Upload failed',
       });
+      
+      // Reset after 5 seconds
+      setTimeout(() => {
+        setUploadStatus({ status: 'idle' });
+      }, 5000);
     }
   };
 
@@ -64,14 +80,17 @@ export default function UploadPanel() {
   };
 
   return (
-    <div className="border-b bg-white p-6">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">Upload Documents</h2>
+    <div className="p-6">
+      <div className="flex items-center gap-2 mb-4">
+        <FileText className="w-5 h-5 text-blue-600" />
+        <h2 className="text-lg font-semibold text-gray-800">Upload Documents</h2>
+      </div>
 
       <div
-        className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+        className={`border-2 border-dashed rounded-lg p-6 text-center transition-all ${
           dragActive
             ? 'border-blue-500 bg-blue-50'
-            : 'border-gray-300 hover:border-gray-400'
+            : 'border-gray-300 hover:border-gray-400 bg-gray-50'
         }`}
         onDragEnter={() => setDragActive(true)}
         onDragLeave={() => setDragActive(false)}
@@ -93,34 +112,32 @@ export default function UploadPanel() {
         >
           {uploadStatus.status === 'uploading' ? (
             <>
-              <Loader2 className="w-12 h-12 text-blue-500 mb-2 animate-spin" />
+              <Loader2 className="w-10 h-10 text-blue-500 mb-2 animate-spin" />
               <p className="text-sm text-gray-600">Uploading...</p>
             </>
           ) : uploadStatus.status === 'success' ? (
             <>
-              <CheckCircle className="w-12 h-12 text-green-500 mb-2" />
-              <p className="text-sm text-green-600 font-medium">
-                {uploadStatus.message}
-              </p>
+              <CheckCircle className="w-10 h-10 text-green-500 mb-2" />
+              <p className="text-sm text-green-600 font-medium mb-1">Success!</p>
               {uploadStatus.metadata && (
-                <div className="mt-2 text-xs text-gray-500 space-y-1">
-                  <p>Chunks: {uploadStatus.metadata.num_chunks}</p>
-                  <p>Total in DB: {uploadStatus.metadata.total_in_db}</p>
+                <div className="text-xs text-gray-500 space-y-0.5">
+                  <p>{uploadStatus.metadata.num_chunks} chunks created</p>
+                  <p>{uploadStatus.metadata.total_in_db} total in database</p>
                 </div>
               )}
             </>
           ) : uploadStatus.status === 'error' ? (
             <>
-              <XCircle className="w-12 h-12 text-red-500 mb-2" />
+              <XCircle className="w-10 h-10 text-red-500 mb-2" />
               <p className="text-sm text-red-600">{uploadStatus.message}</p>
             </>
           ) : (
             <>
-              <Upload className="w-12 h-12 text-gray-400 mb-2" />
+              <Upload className="w-10 h-10 text-gray-400 mb-2" />
               <p className="text-sm text-gray-600 mb-1">
-                Click to upload or drag and drop
+                Click or drag to upload
               </p>
-              <p className="text-xs text-gray-500">PDF, DOCX, or TXT files</p>
+              <p className="text-xs text-gray-500">PDF, DOCX, or TXT</p>
             </>
           )}
         </label>

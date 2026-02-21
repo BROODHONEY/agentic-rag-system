@@ -124,7 +124,18 @@ Thought:{{agent_scratchpad}}"""
         question: str,
         conversation_id: Optional[str] = None,
     ) -> Dict[str, Any]:
-        """Query the Agentic RAG system."""
+        """
+        Query the Agentic RAG system.
+        
+        Flow with embeddings:
+        1. User question is received
+        2. Agent decides to use semantic_search tool
+        3. semantic_search converts query to embeddings using HuggingFace model
+        4. ChromaDB performs vector similarity search using embeddings
+        5. Most relevant document chunks are retrieved
+        6. Retrieved chunks are passed to LLM as context
+        7. LLM generates answer based on retrieved context
+        """
         try:
             logger.info(f"Processing query: {question}")
             
@@ -160,6 +171,10 @@ Thought:{{agent_scratchpad}}"""
         if self.use_memory:
             self.memory.clear_history(conversation_id)
             logger.info(f"Cleared memory for conversation: {conversation_id}")
+    
+    def get_tool_names(self) -> List[str]:
+        """Get list of tool names."""
+        return [tool.name for tool in self.tools]
 
 
 def create_agentic_rag(
